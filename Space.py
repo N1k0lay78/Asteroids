@@ -3,7 +3,9 @@ from Object import Object
 class Space:
     def __init__(self):
         self.objects = [
-            Object([300, 300], [0, 35])
+            Object([300, 300], [0, 30]),
+            Object([200, 300], [0, 50]),
+            Object([100, 300], [0, 100]),
         ]
         self.world_size = (600, 600)
         self.dt = 1/30

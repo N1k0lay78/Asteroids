@@ -24,6 +24,7 @@ class GameUI:
                 quit()
     
     def draw_world(self):
+        self.screen.fill((255, 255, 255))
         for obj in self.space.objects:
             self.screen.blit(self.asteroid_sprite, obj.get_pos())
     

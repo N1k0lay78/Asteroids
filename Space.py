@@ -21,6 +21,17 @@ class Space:
 
         obj.set_pos(new_pos=pos)
 
+    def add_object(self, obj):
+        pass
+
+    def remove_object(self, obj):
+        pass
+
+    def get_distance(self, obj_1, obj_2):
+        pass
+
+    def get_is_collided(self, obj):
+        pass
 
     def update(self):
         for obj in self.objects:

@@ -51,8 +51,8 @@ class GameUI:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
                     bullet = Object(
                         self.ship.get_pos(), 
                         self.get_bullet_vector(),

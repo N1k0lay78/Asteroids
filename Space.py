@@ -3,9 +3,9 @@ from Object import Object
 class Space:
     def __init__(self):
         self.objects = [
-            Object([300, 300], [0, 30]),
-            Object([200, 300], [0, 50]),
-            Object([100, 300], [0, 100]),
+            Object([300, 300], [0, 30], "aster"),
+            Object([200, 300], [0, 50], "aster"),
+            Object([100, 300], [0, 100], "aster"),
         ]
         self.world_size = (600, 600)
         self.dt = 1/30
@@ -22,10 +22,10 @@ class Space:
         obj.set_pos(new_pos=pos)
 
     def add_object(self, obj):
-        pass
+        self.objects.append(obj)
 
     def remove_object(self, obj):
-        pass
+        self.objects.remove(obj)
 
     def get_distance(self, obj_1, obj_2):
         pass

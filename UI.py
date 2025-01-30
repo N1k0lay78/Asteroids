@@ -7,7 +7,8 @@ from random import randrange
 class GameUI:
     def __init__(self):
         self.space = Space()
-        # создание космического корабля
+        self.ship = Object([450, 237],[0,0], "player")
+        self.space.add_object(self.ship)
         pygame.init()
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((self.space.world_size))
@@ -15,8 +16,10 @@ class GameUI:
         pygame.display.set_caption('SAMOKATSTEROIDS')
         self.asteroid_sprite = pygame.image.load('Samokat.png')
         self.asteroid_sprite.set_colorkey((255,255,255))
-        # загружаем картинку космического корабля и пули
-
+        self.stoit_sprite = pygame.image.load('Stoit.png')
+        self.stoit_sprite.set_colorkey((255,255,255))
+        self.kofe_sprite = pygame.image.load('kofe.png')
+        self.kofe_sprite.set_colorkey((255,255,255))
     def input(self):
         # добавить перемешение корабля
         for event in pygame.event.get():
@@ -30,10 +33,10 @@ class GameUI:
         pass
 
     def draw_world(self):
-        # добавить отрисовку разных типов объектов
+        name_to_sprite = {"aster": self.asteroid_sprite, "player": self.stoit_sprite, "kofe" : self.kofe_sprite}
         self.screen.fill((255, 255, 255))
         for obj in self.space.objects:
-            self.screen.blit(self.asteroid_sprite, obj.get_pos())
+            self.screen.blit(name_to_sprite[obj.get_name()], obj.get_pos())
     
     def run(self):
         while True:

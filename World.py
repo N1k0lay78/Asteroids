@@ -28,6 +28,12 @@ class World:
                 return True
         return False
     
+    def get_collide(self, obj):
+        for another_obj in self.objects:
+            if another_obj != obj and self.check_collide(another_obj, obj):
+                return another_obj
+        return None
+    
     def update_object(self, obj):
         pos = obj.get_pos()
         vel = obj.get_velocity()

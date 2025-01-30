@@ -5,7 +5,7 @@ class Object:
         self.name = groot
 
     def get_pos(self):
-        return self.pos
+        return self.pos[:]
     
     def get_vel(self):
         return self.vel

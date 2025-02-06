@@ -2,13 +2,21 @@ from World import World
 from Object import Object
 import pygame
 from random import randrange
-from math import cos, pi
+from math import cos, pi, atan2, degrees
 from time import time
 
 
 class GameUI:
     def __init__(self):
         self.world = World()
+
+        obj = Object(
+            [self.world.world_size[0] / 2 , self.world.world_size[1] / 2], 
+            [-30, 15], 
+            "bg", 0
+        )
+        self.world.add_object(obj)
+
         for _ in range(15):
             obj = Object(
                 [randrange(0, self.world.world_size[0]), randrange(0, self.world.world_size[1])], 
@@ -16,12 +24,14 @@ class GameUI:
                 "cometa", 20
             )
             self.world.add_object(obj)
+        
         self.ship = Object(
                 [self.world.world_size[0] / 2 , self.world.world_size[1] / 2], 
                 [0, 0],
                 "player", 20
             )
         self.world.add_object(self.ship)
+
         self.bullets = []
         pygame.init()
         self.screen = pygame.display.set_mode(self.world.world_size)
@@ -35,6 +45,7 @@ class GameUI:
         self.ship_sprite.set_colorkey((255,255,255))
         self.bullet_sprite = pygame.image.load('bullet.png')
         self.bullet_sprite.set_colorkey((255,255,255))
+        self.background_sprite = pygame.transform.scale(pygame.image.load('pattern bg.jpg'), (1200, 1200))
 
     def input(self):
         v = [0, 0]
@@ -93,10 +104,19 @@ class GameUI:
                     self.bullets.remove(data)
 
     def draw_world(self):
-        name_to_sprite = {"cometa": self.asteroid, "player": self.ship_sprite, "bullet": self.bullet_sprite}
-        self.screen.fill((255, 255, 255))
+        name_to_sprite = {
+            "cometa": self.asteroid, "player": self.ship_sprite, 
+            "bullet": self.bullet_sprite, "bg": self.background_sprite
+        }
+        # self.screen.fill((255, 255, 255))
         for obj in self.world.get_objects():
             sprite = name_to_sprite[obj.get_name()]
+            if obj.get_name() == "player":
+                ship_pos = obj.get_pos()
+                mouse_pos = pygame.mouse.get_pos()
+                angle = degrees(atan2(mouse_pos[0] - ship_pos[0], mouse_pos[1] - ship_pos[1])) + 180
+                sprite = pygame.transform.rotate(sprite, angle)
+                sprite.set_colorkey((255,255,255))
             pos = obj.get_pos()
             pos[0] -= sprite.get_size()[0]/2
             pos[1] -= sprite.get_size()[1]/2

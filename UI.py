@@ -7,6 +7,7 @@ from random import randrange
 class GameUI:
     def __init__(self):
         self.space = Space()
+        # создать объект заднего фона
         self.ship = Object([450, 237],[0,0], "player")
         self.space.add_object(self.ship)
         pygame.init()
@@ -20,6 +21,7 @@ class GameUI:
         self.stoit_sprite.set_colorkey((255,255,255))
         self.kofe_sprite = pygame.image.load('kofe.png')
         self.kofe_sprite.set_colorkey((255,255,255))
+        # загрузить спрайт заднего фона БЕЗ прозрачного фона
 
     def input(self):
         # добавить перемешение корабля
@@ -52,9 +54,11 @@ class GameUI:
         pass
 
     def draw_world(self):
+        # добавить объект заднего фона
         name_to_sprite = {"aster": self.asteroid_sprite, "player": self.stoit_sprite, "kofe" : self.kofe_sprite}
-        self.screen.fill((255, 255, 255))
+        self.screen.fill((255, 255, 255))  # убрать
         for obj in self.space.objects:
+            # добавить поворот космического корабля в зависимости от того, где находится курсор
             self.screen.blit(name_to_sprite[obj.get_name()], obj.get_pos())
     
     def run(self):

@@ -1,6 +1,7 @@
 from Space import Space
 from Object import Object
 import pygame
+import time 
 from random import randrange
 
 
@@ -8,19 +9,26 @@ class GameUI:
     def __init__(self):
         self.space = Space()
         # создать объект заднего фона
-        self.ship = Object([450, 237],[0,0], "player")
+        self.ship = Object([450, 237],[0,0], "player", 25)
         self.space.add_object(self.ship)
+        self.bullets = []
         pygame.init()
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((self.space.world_size))
         self.screen.fill((255, 255, 255))
         pygame.display.set_caption('SAMOKATSTEROIDS')
+        pygame.mixer.music.load("Chime, Teminite - Duckstep [NCS Release].mp3")
+        pygame.mixer.music.set_volume(0.02)
+        pygame.mixer.music.play(-1, 0.0)
+        self.shoot_sound = pygame.mixer.Sound("mixkit-sci-fi-battle-laser-shots-2783.wav")
+        self.shoot_sound.set_volume(0.03)
         self.asteroid_sprite = pygame.image.load('Samokat.png')
         self.asteroid_sprite.set_colorkey((255,255,255))
         self.stoit_sprite = pygame.image.load('Stoit.png')
         self.stoit_sprite.set_colorkey((255,255,255))
         self.kofe_sprite = pygame.image.load('kofe.png')
         self.kofe_sprite.set_colorkey((255,255,255))
+        
         # загрузить спрайт заднего фона БЕЗ прозрачного фона
 
     def input(self):
@@ -44,14 +52,26 @@ class GameUI:
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
-                    bullet = Object(self.ship.get_pos(), self.get_bullet_velocity(), "kofe" )
+                    self.shoot_sound.play()
+                    bullet = Object(self.ship.get_pos(), self.get_bullet_velocity(), "kofe", 20 )
+                    self.bullets.append([bullet, time.time()])
                     self.space.add_object(bullet)
                 
             # добавить стрельбу
     
     def game_logic(self):
+        for i in range(len(self.bullets)-1, -1, -1):
+            bullet = self.bullets[i]
+            if bullet[1] + 10 < time.time():
+                self.space.remove_object(bullet[0])
+                self.bullets.pop(i)
+            elif self.space.get_is_collided(bullet[0]) :
+                self.space.remove_object(self.space.get_is_collided(bullet[0]))
+                self.space.remove_object(bullet[0])
+                self.bullets.pop(i)
+                
+                
         # убирать патрон при привышении времени жизни и при попадании в астероид
-        pass
 
     def draw_world(self):
         # добавить объект заднего фона
@@ -68,6 +88,8 @@ class GameUI:
             self.space.update()
 
             self.draw_world()
+
+            self.game_logic()
 
             pygame.display.update()
             self.clock.tick(30)

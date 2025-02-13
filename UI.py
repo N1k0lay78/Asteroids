@@ -38,11 +38,23 @@ class GameUI:
         self.screen.fill((255, 255, 255))
         pygame.display.set_caption('Астероид')
         self.clock = pygame.time.Clock()
+        
+        pygame.mixer.init()
+        pygame.mixer.music.load("Chime, Teminite - Duckstep [NCS Release].mp3")
+        pygame.mixer.music.set_volume(0.02)
+        pygame.mixer.music.play(-1, 0.0)
+        self.shoot_sound = pygame.mixer.Sound('mixkit-sci-fi-battle-laser-shots-2783.wav')
+        self.shoot_sound.set_volume(0.03)
 
         self.asteroid = pygame.image.load('asteroid.png')
         self.asteroid.set_colorkey((255,255,255))
         self.ship_sprite = pygame.image.load('ship.png')
         self.ship_sprite.set_colorkey((255,255,255))
+        self.ship_sprites = [pygame.image.load('ship_1.png'), pygame.image.load('ship_2.png'), pygame.image.load('ship_3.png')]
+        self.ship_sprites[0].set_colorkey((255,255,255))
+        self.ship_sprites[1].set_colorkey((255,255,255))
+        self.ship_sprites[2].set_colorkey((255,255,255))
+        self.ship_animation_frame_number = 0
         self.bullet_sprite = pygame.image.load('bullet.png')
         self.bullet_sprite.set_colorkey((255,255,255))
         self.background_sprite = pygame.transform.scale(pygame.image.load('pattern bg.jpg'), (1200, 1200))
@@ -63,6 +75,7 @@ class GameUI:
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                self.shoot_sound.play()
                 if pygame.mouse.get_pressed()[0]:
                     bullet = Object(
                         self.ship.get_pos(), 
@@ -105,13 +118,15 @@ class GameUI:
 
     def draw_world(self):
         name_to_sprite = {
-            "cometa": self.asteroid, "player": self.ship_sprite, 
+            "cometa": self.asteroid, "player": self.ship_sprites, 
             "bullet": self.bullet_sprite, "bg": self.background_sprite
         }
         # self.screen.fill((255, 255, 255))
         for obj in self.world.get_objects():
             sprite = name_to_sprite[obj.get_name()]
             if obj.get_name() == "player":
+                sprite = sprite[(self.ship_animation_frame_number // 10) % 3]
+                self.ship_animation_frame_number += 1
                 ship_pos = obj.get_pos()
                 mouse_pos = pygame.mouse.get_pos()
                 angle = degrees(atan2(mouse_pos[0] - ship_pos[0], mouse_pos[1] - ship_pos[1])) + 180
